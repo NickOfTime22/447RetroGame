@@ -130,7 +130,8 @@
 
             // Set camera zoom
             this.cameras.main.zoom = 0.5;
-            this.cameras.main.startFollow(player);
+            // this.cameras.main.startFollow(player);
+            this.cameras.main.setBounds(0, 0, 1600, 1200);
 
             //Phaser.Display.Align.In.Center(background);
             //Phaser.Display.Align.In.TopCenter(background);
@@ -280,8 +281,8 @@
             // Camera position is average between reticle and player positions
             avgX = ((player.x + reticle.x) / 2) - 400;
             avgY = ((player.y + reticle.y) / 2) - 300;
-            this.cameras.main.scrollX = avgX;
-            this.cameras.main.scrollY = avgY;
+            // this.cameras.main.scrollX = avgX;
+            // this.cameras.main.scrollY = avgY;
 
             // Make reticle move with player
             reticle.body.velocity.x = player.body.velocity.x;

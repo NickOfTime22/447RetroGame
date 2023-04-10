@@ -28,6 +28,7 @@
                     reticle: null,
                     moveKeys: null,
                     playerBullets: null,
+                    enemyBullets: null,
                     lastFired: 0,
                     time: 0,
                 }
@@ -139,7 +140,7 @@
 
 
             // Creates object for input with WASD kets
-            moveKeys = this.input.keyboard.addKeys({
+            cursors = this.input.keyboard.addKeys({
                 'up': Phaser.Input.Keyboard.KeyCodes.W,
                 'down': Phaser.Input.Keyboard.KeyCodes.S,
                 'left': Phaser.Input.Keyboard.KeyCodes.A,
@@ -147,36 +148,36 @@
             });
 
             // Enables movement of player with WASD keys
-            this.input.keyboard.on('keydown_W', function (event) {
-                player.setAccelerationY(-800);
-            });
-            this.input.keyboard.on('keydown_S', function (event) {
-                player.setAccelerationY(800);
-            });
-            this.input.keyboard.on('keydown_A', function (event) {
-                player.setAccelerationX(-800);
-            });
-            this.input.keyboard.on('keydown_D', function (event) {
-                player.setAccelerationX(800);
-            });
+            // this.input.keyboard.on('keydown_W', function (event) {
+            //     player.setAccelerationY(-800);
+            // });
+            // this.input.keyboard.on('keydown_S', function (event) {
+            //     player.setAccelerationY(800);
+            // });
+            // this.input.keyboard.on('keydown_A', function (event) {
+            //     player.setAccelerationX(-800);
+            // });
+            // this.input.keyboard.on('keydown_D', function (event) {
+            //     player.setAccelerationX(800);
+            // });
 
-            // Stops player acceleration on uppress of WASD keys
-            this.input.keyboard.on('keyup_W', function (event) {
-                if (moveKeys['down'].isUp)
-                    player.setAccelerationY(0);
-            });
-            this.input.keyboard.on('keyup_S', function (event) {
-                if (moveKeys['up'].isUp)
-                    player.setAccelerationY(0);
-            });
-            this.input.keyboard.on('keyup_A', function (event) {
-                if (moveKeys['right'].isUp)
-                    player.setAccelerationX(0);
-            });
-            this.input.keyboard.on('keyup_D', function (event) {
-                if (moveKeys['left'].isUp)
-                    player.setAccelerationX(0);
-            });
+            // // Stops player acceleration on uppress of WASD keys
+            // this.input.keyboard.on('keyup_W', function (event) {
+            //     if (moveKeys['down'].isUp)
+            //         player.setAccelerationY(0);
+            // });
+            // this.input.keyboard.on('keyup_S', function (event) {
+            //     if (moveKeys['up'].isUp)
+            //         player.setAccelerationY(0);
+            // });
+            // this.input.keyboard.on('keyup_A', function (event) {
+            //     if (moveKeys['right'].isUp)
+            //         player.setAccelerationX(0);
+            // });
+            // this.input.keyboard.on('keyup_D', function (event) {
+            //     if (moveKeys['left'].isUp)
+            //         player.setAccelerationX(0);
+            // });
 
             this.input.on('pointerdown', function (pointer, time, lastFired) {
                 if (player.active === false)
@@ -292,7 +293,43 @@
             constrainVelocity(player, 500);
 
             // Constrain position of reticle
-            constrainReticle(reticle, 550);
+            constrainReticle(reticle, 300);
+
+            if (cursors.left.isDown)
+            {
+                player.setVelocityX(-180);
+
+                // player.anims.play('left', true);
+            }
+            else if (cursors.right.isDown)
+            {
+                player.setVelocityX(180);
+
+                // player.anims.play('right', true);
+            }
+            else
+            {
+                player.setVelocityX(0);
+
+                // player.anims.play('turn');
+            }
+
+            if (cursors.up.isDown)
+            {
+                player.setVelocityY(-180);
+            }
+            else if (cursors.down.isDown)
+            {
+                player.setVelocityY(180);
+
+                // player.anims.play('right', true);
+            }
+            else
+            {
+                player.setVelocityY(0);
+
+                // player.anims.play('turn');
+            }
         }
 
     </script>

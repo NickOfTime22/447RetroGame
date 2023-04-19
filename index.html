@@ -51,7 +51,7 @@ var Bullet = new Phaser.Class({
             this.direction = 0;
             this.xSpeed = 0;
             this.ySpeed = 0;
-            this.setSize(12, 12, true);
+            this.setSize(32, 32, true);
         },
 
     // Fires a bullet from the player to the reticle
@@ -91,7 +91,7 @@ function preload() {
     //this.load.image('target', 'assets/demoscene/ball.png');
     this.load.image('player', '/Game/tank.png');
     this.load.image('background', '/Game/grass.png');
-    this.load.image('bullet', '/Game/bullet.png');
+    // this.load.image('bullet', '/Game/bullet.png');
     this.load.image('enemyTank', '/Game/tank.png'); // -------CHANGE THIS--------
 }
 
@@ -165,7 +165,7 @@ function create() {
 
         if (bullet) {
             bullet.fire(player, reticle);
-            this.physics.add.overlap(enemyTanks, bullet, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
+            this.physics.add.collider(enemyTanks, bullet, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
         }
     }, this);
 
@@ -291,6 +291,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
 
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
+        // bulletHit.velocity = 0;
     }
 }
 

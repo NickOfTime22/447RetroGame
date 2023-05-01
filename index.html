@@ -11,7 +11,7 @@ var config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
     width: 800,
-    height: 600,
+    height: 800,
     physics: {
         default: 'arcade',
         arcade: {
@@ -36,6 +36,8 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+
+var score = 0;
 
 var Bullet = new Phaser.Class({
 
@@ -81,6 +83,7 @@ var Bullet = new Phaser.Class({
         if (this.born > 1800) {
             this.setActive(false);
             this.setVisible(false);
+            this.destroy();
         }
     }
 
@@ -90,25 +93,34 @@ function preload() {
     // Load in images and sprites
     //this.load.image('target', 'assets/demoscene/ball.png');
     this.load.image('player', '/Game/tank.png');
-    this.load.image('background', '/Game/grass.png');
-    // this.load.image('bullet', '/Game/bullet.png');
+    this.load.image('background', '/Game/Level1_TheWilds.png');
+    this.load.image('bullet', '/Game/bullet.png');
     this.load.image('enemyTank', '/Game/tank.png'); // -------CHANGE THIS--------
 }
 
 function create() {
     // Create world bounds
     
-    this.physics.world.setBounds(-400, -300, 1600, 1200);
-    var background = this.add.image(400, 300, 'background');
+    this.physics.world.setBounds(-400, -400, 1600, 1600);
+    // this.physics.world.setBounds(-400, -400, 400, 400);
+    var background = this.add.image(400, 400, 'background');
+
+
 
     playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
-    enemyTanks = this.physics.add.group({
-        key: 'enemyTank',
-        // repeat: 1, // makes 10 total tanks in group
-        setXY: { x: 12, y: 300, stepX: 70 }
-    });
+    // enemyTanks = this.physics.add.group({
+    //     key: 'enemyTank',
+    //     repeat: 9, // makes 10 total tanks in group
+    //     setXY: { x: 12, y: 300, stepX: 70 }
+    //     // need random number, Phaser.Math.Between(min, max);
+    // });
+
+    enemyTanks = this.physics.add.group();
+    enemyTanks.create(200, 400, 'enemyTank');
+    enemyTanks.create(675, 30, 'enemyTank');
+    enemyTanks.create(97, 800, 'enemyTank');
 
     // Add background, player, and reticle sprites
     player = this.physics.add.sprite(800, 600, 'player');
@@ -116,17 +128,9 @@ function create() {
     hp1 = this.add.image(-350, -250, 'target');
     hp2 = this.add.image(-300, -250, 'target');
     hp3 = this.add.image(-250, -250, 'target');
-    //bullets = this.add.image(800, 600, 'bullet');
-
-    //Phaser.Display.Align.In.Center(background);
-    //game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    //game.scale.pageAlignHorizontally = true;
-    //game.scale.pageAlignVertically = true;
-
-    // Set image/sprite properties
-
     
-    background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
+    // background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1600);
+    background.setDisplaySize(1600,1600);
     player.setOrigin(0.5, 0.5).setDisplaySize(60, 60).setCollideWorldBounds(true).setDrag(500, 500);
     reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
     
@@ -140,12 +144,6 @@ function create() {
 
     // Set camera zoom
     this.cameras.main.zoom = 0.5;
-    // this.cameras.main.startFollow(player);
-    // this.cameras.main.setBounds(0, 0, 1600, 1200);
-
-    //Phaser.Display.Align.In.Center(background);
-    //Phaser.Display.Align.In.TopCenter(background);
-    //game.scale.pageAlignHorizontally = true;
 
     // Creates object for input with WASD kets
     cursors = this.input.keyboard.addKeys({
@@ -163,13 +161,18 @@ function create() {
         // Get bullet from bullets group
         var bullet = playerBullets.get().setActive(true).setVisible(true);
 
+        bullet.setDisplaySize(50,50);
+
         if (bullet) {
             bullet.fire(player, reticle);
-            this.physics.add.collider(enemyTanks, bullet, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
+            // this.physics.add.collider(enemyTanks, bullet, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
         }
     }, this);
+    
+    // Player bullet hits enemy
+    this.physics.add.collider(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
 
-    // enemy bullet hits player
+    // Enemy bullet hits player
     this.physics.add.collider(player, enemyBullets, (playerHit, bulletHit) => playerHitCallback(playerHit, bulletHit));
 
     // Locks pointer on mousedown
@@ -206,6 +209,8 @@ function create() {
                 reticle.y = player.y - 600;
         }
     }, this);
+
+    this.scoreText = this.add.text(750, -275, 'score: 0', { fontSize: '78px', fill: '#000' });
 
 }
 
@@ -255,6 +260,8 @@ function update(time, delta) {
     }
     
     enemyShoot(time, this.physics);
+
+    this.scoreText.setText(`Score: ${score}`);
 }
 
 function enemyShoot(time, physics) {
@@ -269,6 +276,8 @@ function enemyShoot(time, physics) {
             // Get bullet from bullets group
             var bullet = enemyBullets.get().setActive(true).setVisible(true);
             
+            bullet.setDisplaySize(50,50);
+
             if (bullet) {
                 bullet.fire(child, player);
                 
@@ -289,10 +298,16 @@ function enemyHitCallback (enemyHit, bulletHit) {
             enemyHit.setActive(false).setVisible(false);
         }
 
+        score += 10;
+
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
+        // bulletHit.setVelocityX(-50);
+        // bulletHit.setVelocityY(-50);
+        enemyHit.destroy();
         // bulletHit.velocity = 0;
     }
+    console.log('Score: ', score);
 }
 
 function playerHitCallback (playerHit, bulletHit) {
@@ -316,6 +331,7 @@ function playerHitCallback (playerHit, bulletHit) {
 
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
+        bulletHit.destroy();
     }
 }
 

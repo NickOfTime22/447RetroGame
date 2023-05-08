@@ -6,7 +6,7 @@ Created on Mon May  1 10:54:46 2023
 @author: brendan
 """
 
-from flask import Flask, request, session, redirect, flash
+from flask import Flask, request, session, redirect, flash, url_for
 from flask.templating import render_template
 import sqlite3
 import json
@@ -65,19 +65,17 @@ def login():
             return redirect('/login')
     
         session['username'] = username
-        return redirect('/game/' + username)
+        return redirect(url_for('main_menu', username=username))
     else:
         error = session.pop('error', None)
         return render_template('login.html', error=error)
 
-@app.route('/game/<string:username>')
-def game(username):
+@app.route('/main_menu/<string:username>')
+def main_menu(username):
     conn = sqlite3.connect('TopRankTanks.db')
     cur = conn.cursor()
-    
-    
     username = request.args.get('username')
-    return render_template('Game.html',username=username)
+    return render_template('MainMenu.html',username=username)
 
 @app.route('/account', methods=['POST','GET'])
 def account():

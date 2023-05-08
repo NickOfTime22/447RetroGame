@@ -67,7 +67,7 @@
 </head>
 <body>
   <div class="game-container">
-    <img src="game_cover.jpg" alt="Game Cover">
+    <img src="{{ url_for('static', filename='/images/game_cover.jpg') }}" alt="game_cover">
   </div>
   <div class="login-container">
     <h1>Create Your Account</h1>
@@ -81,7 +81,7 @@
       <input type="submit" value="Create Account">
     </form>
     <p>Already have an account? <a href="/login">Login Page</a></p> <!-- Replace "register.html" with the URL of your registration page -->
-    <p>Want to play without logging in? <a href="/game">Play as guest</a></p>
+    <p>Want to play without logging in? <a href="/main_menu/guest">Play as guest</a></p>
   </div>
 </body>
 </html>

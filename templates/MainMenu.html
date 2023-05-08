@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      text-align: center;
+    }
+    .game-title {
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+    .game-menu-container {
+      display: inline-block;
+      vertical-align: top;
+      width: 30%;
+      margin-right: 5%;
+    }
+    .game-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .game-menu li {
+      display: inline-block;
+      margin: 10px;
+    }
+    .game-menu button {
+      font-size: 20px;
+      padding: 10px 20px;
+    }
+    .settings-button {
+      display: block;
+    }
+    .scoreboard-container {
+      display: inline-block;
+      vertical-align: top;
+      width: 60%;
+    }
+    .scoreboard {
+      margin-top: 50px;
+    }
+    .scoreboard h1 {
+      margin-bottom: 10px;
+    }
+    .scoreboard table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .scoreboard table th {
+      text-align: left;
+    }
+    .scoreboard table td, .scoreboard table th {
+      padding: 5px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-title">Top Rank Tank</div>
+  <div class="game-menu-container">
+    <ul class="game-menu">
+      <li><button>ARCADE</button></li>
+      <li><button>LEVELS</button></li>
+    </ul>
+  </div>
+  <div class="scoreboard-container">
+    <div class="scoreboard">
+      <h1>Global High Scores</h1>
+      <table>
+        <tr>
+          <th>Player Name</th>
+          <th>Score</th>
+        </tr>
+        <tr>
+        </tr>
+        <!-- Add more rows for additional players -->
+      </table>
+      <h1>Your High Scores</h1>
+      <table>
+        <tr>
+          <th>Score</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
+

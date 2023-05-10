@@ -16,7 +16,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -120,31 +120,34 @@ function create() {
     // });
 
     walls.create(600, 750, "vwall");
+    walls.create(200, 750, "vwall");
+    walls.create(600, 50, "vwall");
     walls.create(200, 50, "vwall");
     
     // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
-    // enemyTanks.create(1000, 400, 'enemyTank');
-    // enemyTanks.create(400, 1000, 'enemyTank');
-    // enemyTanks.create(-200, 400, 'enemyTank');
-    // enemyTanks.create(400, -200, 'enemyTank');
+    enemyTanks.create(-100, -100, 'enemyTank');
+    enemyTanks.create(0, -100, 'enemyTank');
+    enemyTanks.create(100, -100, 'enemyTank');
 
-    // TANKS FOR LEVEL 3:
-    // enemyTanks.create(1000, 400, 'enemyTank');
-    // enemyTanks.create(400, 1000, 'enemyTank');
-    // enemyTanks.create(-200, 400, 'enemyTank');
-    // enemyTanks.create(400, -200, 'enemyTank');
-    // enemyTanks.create(-100, -100, 'enemyTank');
-    // enemyTanks.create(900, -100, 'enemyTank');
-    // enemyTanks.create(-100, 900, 'enemyTank');
-    // enemyTanks.create(900, 900, 'enemyTank');
+    enemyTanks.create(700, -100, 'enemyTank');
+    enemyTanks.create(800, -100, 'enemyTank');
+    enemyTanks.create(900, -100, 'enemyTank');
+
+    enemyTanks.create(-100, 900, 'enemyTank');
+    enemyTanks.create(0, 900, 'enemyTank');
+    enemyTanks.create(100, 900, 'enemyTank');
+
+    enemyTanks.create(700, 900, 'enemyTank');
+    enemyTanks.create(800, 900, 'enemyTank');
+    enemyTanks.create(900, 900, 'enemyTank');
 
     // Add background, player, and reticle sprites
     player = this.physics.add.sprite(400, 400, 'player');
     reticle = this.physics.add.sprite(800, 700, 'target');
-    hp1 = this.add.image(-350, -350, 'health');
-    hp2 = this.add.image(-300, -350, 'health');
-    hp3 = this.add.image(-250, -350, 'health');
+    hp1 = this.add.image(-325, -350, 'health').setDisplaySize(120,120);
+    hp2 = this.add.image(-200, -350, 'health').setDisplaySize(120,120);
+    hp3 = this.add.image(-74, -350, 'health').setDisplaySize(120,120);
     
     // Player bullet hits enemy
     this.physics.add.collider(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
@@ -243,16 +246,22 @@ function update(time, delta) {
         if (lost && !won) {
             redBox = this.add.image(400, 400, 'background');
             redBox.setDisplaySize(1600, 1600).setTintFill(0xff0000);
-            gameOverText = this.add.text(100, 350, 'GAME OVER', { fontSize: '124px', fill: '#000' });
+            gameOverText = this.add.text(75, 350, 'GAME OVER', { fontSize: '124px', fill: '#000' });
         }      
 
         if (won && !lost) {
+            // button
+            // count health for stars
             gameOverText = this.add.text(125, 350, 'YOU WON', { fontSize: '124px', fill: '#000' });
         }
 
         // stop reticle from moving after game ends
         reticle.setVelocityX(0);
         reticle.setVelocityY(0);
+
+        this.homeButton = this.add.text(-200,600, 'Go to Home Screen', { fontSize: '124px', fill: '#000' })
+            .setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => goHome());
 
         return;
     }
@@ -301,6 +310,10 @@ function update(time, delta) {
     enemyShoot(time, this.physics);
 
     this.scoreText.setText(`Score: ${score}`);
+}
+
+function goHome() {
+    location.href = './Levels.html';
 }
 
 function enemyShoot(time, physics) {

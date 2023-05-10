@@ -71,6 +71,9 @@
   </div>
   <div class="login-container">
     <h1>Create Your Account</h1>
+	{% if session['error'] %}
+	<div class="alert alert-danger">{{ session['error'] }}</div>
+	{% endif %}
     <form action="/account" method="post"> <!-- Replace "login.php" with your own server-side script for processing login data -->
       <label for="username">Create a Username</label>
       <input type="text" id="username" name="username" placeholder="Type your username" required>

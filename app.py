@@ -6,7 +6,7 @@ Created on Mon May  1 10:54:46 2023
 @author: brendan
 """
 
-from flask import Flask, request, session, redirect, flash, url_for
+from flask import Flask, request, session, redirect, flash, url_for, jsonify
 from flask.templating import render_template
 import sqlite3
 import json
@@ -21,16 +21,14 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(console_handler)
 
+@app.route('/scores')
 def load_global_scores():
     conn = sqlite3.connect('TopRankTanks.db')
     c = conn.cursor()
     c.execute('SELECT * FROM scores ORDER BY score DESC LIMIT 5')
-    rows = c.fetchall()
-    scores = []
-    for row in rows:
-        scores.append({'name': row[0], 'score': row[1]})
-    conn.close()
-    return json.dumps({'data': scores})
+    scores = [{'username': row[1], 'score': row[2]} for row in c.fetchall()]
+    return scores
+    
 
 def load_local_scores():
     conn = sqlite3.connect('TopRankTanks.db')
@@ -58,24 +56,23 @@ def login():
     
         if user is None:
             session['error'] = 'Invalid username'
-            return redirect('/login')
+            return render_template('login.html', error=session.get('error'))
     
         if user[1] != password:
-            session['error'] = 'Invalid password'
-            return redirect('/login')
+            session['error'] = 'Incorrect password'
+            return render_template('login.html', error=session.get('error'))
     
         session['username'] = username
         return redirect(url_for('main_menu', username=username))
     else:
-        error = session.pop('error', None)
-        return render_template('login.html', error=error)
+        session.pop('error', None)
+        return render_template('login.html', error=None)
 
 @app.route('/main_menu/<string:username>')
 def main_menu(username):
-    conn = sqlite3.connect('TopRankTanks.db')
-    cur = conn.cursor()
     username = request.args.get('username')
-    return render_template('MainMenu.html',username=username)
+    scores = load_global_scores()
+    return render_template('MainMenu.html',username=username,scores=scores)
 
 @app.route('/account', methods=['POST','GET'])
 def account():
@@ -91,12 +88,10 @@ def account():
         cur.execute("SELECT * FROM users WHERE username=?", (username,))
         user = cur.fetchone()
         
-        app.logger.info("hello")
-        
         if user is None:
             if(password != confirm):
                 session['error'] = 'Passwords do not match'
-                return redirect('/Account')
+                return render_template('account.html', error=session.get('error'))
             else:
                 cur.execute("INSERT INTO users (username, password) VALUES (?,?)", (username,password))
                 conn.commit()
@@ -104,7 +99,7 @@ def account():
                 
         else:
             session['error'] = 'Username already exists'
-            return redirect('/Account')
+            return render_template('account.html', error=session.get('error'))
         
     return render_template('Account.html')
 

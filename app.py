@@ -21,6 +21,16 @@ console_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(console_handler)
 
 
+@app.route('/updateDB/1/<int:finalHealth>/<string:username>', methods=['POST','GET'])
+def updateOne(finalHealth,username):
+    conn = sqlite3.connect('TopRankTanks.db')
+    c = conn.cursor()
+    current = c.execute('SELECT levelOne FROM Users WHERE username=?',(username,)).fetchone()
+    if(current[0] < finalHealth):
+        c.execute('UPDATE Users SET levelOne =? WHERE username=?',(finalHealth,username,))
+    conn.commit()
+    return render_template('Levels.html', username=username)
+    
 @app.route('/levelThree/<string:username>', methods=['POST'])
 def levelThree(username):
     return render_template('LevelThree.html',username=username)
@@ -36,17 +46,6 @@ def levelOne(username):
 
 @app.route('/levels/<string:username>', methods=['POST','GET'])
 def levels(username):
-    conn = sqlite3.connect('TopRankTanks.db')
-    c = conn.cursor()
-    c.execute('SELECT levelOne FROM Users WHERE username= ?',(username,))
-    #levelOne = c.fetchone()
-    #levelOne = levelOne[0]
-    c.execute('SELECT levelTwo FROM Users WHERE username= ?',(username,))
-    #levelTwo = c.fetchone()
-    #levelTwo = levelTwo[0]
-    c.execute('SELECT levelThree FROM Users WHERE username= ?',(username,))
-    #levelThree = c.fetchone()
-    #levelThree = levelThree[0]
     return render_template('Levels.html', username=username)
 
 def load_global_scores():
@@ -88,7 +87,7 @@ def account():
                 session['error'] = 'Passwords do not match'
                 return render_template('account.html', error=session.get('error'))
             else:
-                cur.execute("INSERT INTO Users (username, password, levelOne, levelTwo, levelThree) VALUES (?,?,1,0,0)", (username,password))
+                cur.execute("INSERT INTO Users (username, password, levelOne, levelTwo, levelThree) VALUES (?,?,0,0,0)", (username,password))
                 conn.commit()
                 return redirect('/login')
                 

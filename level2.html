@@ -100,7 +100,8 @@ function preload() {
     this.load.image('bullet', '/Game/bullet.png');
     this.load.image('enemyTank', '/Game/tank.png');
     this.load.image('health', '/Game/toolbox.png');
-    this.load.image('wall', '/Game/platform.png'); //CHANGE THIS
+    this.load.image('hwall', '/Game/HWall.png');
+    this.load.image('vwall', '/Game/VWall.png');
 }
 
 function create() {
@@ -118,15 +119,15 @@ function create() {
     //     // need random number, Phaser.Math.Between(min, max);
     // });
 
-    walls.create(400, 250, "wall");
-    walls.create(400, 550, "wall");
+    walls.create(600, 750, "vwall");
+    walls.create(200, 50, "vwall");
     
     // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
-    enemyTanks.create(1000, 400, 'enemyTank');
-    enemyTanks.create(400, 1000, 'enemyTank');
-    enemyTanks.create(-200, 400, 'enemyTank');
-    enemyTanks.create(400, -200, 'enemyTank');
+    // enemyTanks.create(1000, 400, 'enemyTank');
+    // enemyTanks.create(400, 1000, 'enemyTank');
+    // enemyTanks.create(-200, 400, 'enemyTank');
+    // enemyTanks.create(400, -200, 'enemyTank');
 
     // TANKS FOR LEVEL 3:
     // enemyTanks.create(1000, 400, 'enemyTank');

@@ -100,7 +100,7 @@ function preload() {
     this.load.image('bullet', '/Game/bullet.png');
     this.load.image('enemyTank', '/Game/tank.png');
     this.load.image('health', '/Game/toolbox.png');
-    this.load.image('wall', '/Game/platform.png'); //CHANGE THIS
+    this.load.image('wall', '/Game/HWall.png');
 }
 
 function create() {
@@ -192,7 +192,6 @@ function create() {
 
         if (bullet) {
             bullet.fire(player, reticle);
-            // this.physics.add.collider(enemyTanks, bullet, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
         }
     }, this);
     
@@ -378,6 +377,7 @@ function playerHitCallback (playerHit, bulletHit) {
     }
 }
 
+// Destroys bullet when it collides with a wall
 function wallHitCallback(bulletHit, wallHit) {
     bulletHit.destroy();
 }

@@ -8,7 +8,6 @@
       border-radius: 5px;
       color: black;
       font-size: 20px;
-      background-color: #4CAF50; /* Green */
     }
     .container {
       margin: 0 auto;
@@ -19,7 +18,33 @@
       list-style-type: none;
     }
     .container ul li {
+      margin-bottom: 10px;
       border: none;
+    }
+    .container ul li:nth-child(1) button {
+	<!-- Level 1 has green cause of scene -->
+      border: 1px solid #000000;
+      border-radius: 5px;
+      color: black;
+      font-size: 20px;
+      background-color: #4CAF50; /* Green */
+      background-image: linear-gradient(to right, #4CAF50 0%, #FFA500 50%, #4CAF50 100%);
+    }
+    .container ul li:nth-child(2) button {
+	  border: 1px solid #000000;
+      border-radius: 5px;
+      color: black;
+      font-size: 20px;
+      background-color: #FF0000; /* Red */
+      background-image: linear-gradient(to right, #FF0000 0%, #FFA500 50%, #FF0000 100%);    
+	}
+    .container ul li:nth-child(3) button {
+	  border: 1px solid #000000;
+      border-radius: 5px;
+      color: white;
+      font-size: 20px;
+      background-color: #0000FF; /* Blue */
+      background-image: none;
     }
   </style>
 </head>
@@ -30,9 +55,7 @@
     <ul>
 	<!-- Don't redirect buttons to game directly, to be done thru backend -->
       <li><button onclick="window.location.href=''">Level 1</button></li>
-      <br>
       <li><button onclick="window.location.href=''">Level 2</button></li>
-      <br>
       <li><button onclick="window.location.href=''">Level 3</button></li>
     </ul>
   </div>

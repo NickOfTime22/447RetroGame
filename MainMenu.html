@@ -91,11 +91,23 @@
       </table>
     </div>
   </div>
-  <!-- Ensure user gets redirected upon clicking ARCADE -->
+  
+  <!-- Don't redirect ARCADE button to game directly, to be done thru backend -->
+  <!-- Ensure user gets redirected upon clicking ARCADE or LEVELS -->
+  <!--
   <script>
   document.querySelector('.game-menu li:first-child button').addEventListener('click', function() {
     window.location.href = 'level1.html';
   });
+  -->
+
+  <!-- Ensure user gets redirected upon clicking LEVELS -->
+  <!--
+  document.querySelector('.game-menu li:nth-child(2) button').addEventListener('click', function() {
+    window.location.href = 'levels.html';
+  });
+  -->
+  
 </script>
 </body>
 </html>

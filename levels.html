@@ -8,6 +8,7 @@
       border-radius: 5px;
       color: black;
       font-size: 20px;
+      background-color: #4CAF50; /* Green */
     }
     .container {
       margin: 0 auto;
@@ -15,6 +16,7 @@
     }
 	.container ul {
       text-align: left;
+      list-style-type: none;
     }
     .container ul li {
       border: none;
@@ -26,11 +28,12 @@
     <h1>LEVELS</h1>
     <p>Choose a level to play:</p>
     <ul>
-      <li><button onclick="window.location.href='level1.html'">Level 1</button></li>
+	<!-- Don't redirect buttons to game directly, to be done thru backend -->
+      <li><button onclick="window.location.href=''">Level 1</button></li>
       <br>
-      <li><button onclick="window.location.href='level2.html'">Level 2</button></li>
+      <li><button onclick="window.location.href=''">Level 2</button></li>
       <br>
-      <li><button onclick="window.location.href='level3.html'">Level 3</button></li>
+      <li><button onclick="window.location.href=''">Level 3</button></li>
     </ul>
   </div>
 </body>

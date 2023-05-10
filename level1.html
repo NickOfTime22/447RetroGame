@@ -101,6 +101,7 @@ function preload() {
     this.load.image('enemyTank', '/static/images/enemyTank.png');
     this.load.image('health', '/static/images/toolbox.png');
     this.load.image('wall', '/static/images/HWall.png');
+    this.load.image('star', '/static/images/star.png');
 }
 
 function create() {
@@ -277,7 +278,16 @@ function update(time, delta) {
             gameOverText = this.add.text(75, 350, 'GAME OVER', { fontSize: '124px', fill: '#000' });
         }      
 
-        if (won && !lost) {            
+        if (won && !lost) {
+            if (player.health === 3) {
+                star1 = this.add.image(60, 300, 'star')
+            }
+            else if (player.health === 2) {
+                
+            }
+            else {
+                
+            }
             gameOverText = this.add.text(125, 350, 'YOU WON', { fontSize: '124px', fill: '#000' });
         }
 

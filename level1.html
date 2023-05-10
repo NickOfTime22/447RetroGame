@@ -37,6 +37,9 @@ var config = {
 
 var game = new Phaser.Game(config);
 
+var gameOver = false;
+var lost = false;
+var won = false;
 var score = 0;
 
 var Bullet = new Phaser.Class({
@@ -95,21 +98,19 @@ function preload() {
     this.load.image('player', '/Game/tank.png');
     this.load.image('background', '/Game/Level1.png');
     this.load.image('bullet', '/Game/bullet.png');
-    this.load.image('enemyTank', '/Game/tank.png'); // -------CHANGE THIS--------
+    this.load.image('enemyTank', '/Game/tank.png');
+    this.load.image('health', '/Game/toolbox.png');
+    this.load.image('wall', '/Game/platform.png'); //CHANGE THIS
 }
 
 function create() {
     // Create world bounds
-    
     this.physics.world.setBounds(-400, -400, 1600, 1600);
-    // this.physics.world.setBounds(-400, -400, 400, 400);
     var background = this.add.image(400, 400, 'background');
-
-
 
     playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-
+    walls = this.physics.add.staticGroup();
     // enemyTanks = this.physics.add.group({
     //     key: 'enemyTank',
     //     repeat: 9, // makes 10 total tanks in group
@@ -117,30 +118,56 @@ function create() {
     //     // need random number, Phaser.Math.Between(min, max);
     // });
 
+    walls.create(400, 250, "wall");
+    walls.create(400, 550, "wall");
+    
+    // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
-    enemyTanks.create(200, 400, 'enemyTank');
-    enemyTanks.create(675, 30, 'enemyTank');
-    enemyTanks.create(97, 800, 'enemyTank');
+    enemyTanks.create(1000, 400, 'enemyTank');
+    enemyTanks.create(400, 1000, 'enemyTank');
+    enemyTanks.create(-200, 400, 'enemyTank');
+    enemyTanks.create(400, -200, 'enemyTank');
+
+    // TANKS FOR LEVEL 3:
+    // enemyTanks.create(1000, 400, 'enemyTank');
+    // enemyTanks.create(400, 1000, 'enemyTank');
+    // enemyTanks.create(-200, 400, 'enemyTank');
+    // enemyTanks.create(400, -200, 'enemyTank');
+    // enemyTanks.create(-100, -100, 'enemyTank');
+    // enemyTanks.create(900, -100, 'enemyTank');
+    // enemyTanks.create(-100, 900, 'enemyTank');
+    // enemyTanks.create(900, 900, 'enemyTank');
 
     // Add background, player, and reticle sprites
-    player = this.physics.add.sprite(800, 600, 'player');
+    player = this.physics.add.sprite(400, 400, 'player');
     reticle = this.physics.add.sprite(800, 700, 'target');
-    hp1 = this.add.image(-350, -350, 'BAD');
-    hp2 = this.add.image(-300, -350, 'BAD');
-    hp3 = this.add.image(-250, -350, 'BAD');
+    hp1 = this.add.image(-350, -350, 'health');
+    hp2 = this.add.image(-300, -350, 'health');
+    hp3 = this.add.image(-250, -350, 'health');
     
-    // background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1600);
-    background.setDisplaySize(1600,1600);
+    // Player bullet hits enemy
+    this.physics.add.collider(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
+    this.physics.add.overlap(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
+
+    // Enemy bullet hits player
+    this.physics.add.collider(player, enemyBullets, (playerHit, bulletHit) => playerHitCallback(playerHit, bulletHit));
+    this.physics.add.overlap(player, enemyBullets, (playerHit, bulletHit) => playerHitCallback(playerHit, bulletHit));
+
+    this.physics.add.collider(player, walls);
+    this.physics.add.collider(playerBullets, walls, (bulletHit, wallHit) => wallHitCallback(bulletHit, wallHit));
+    this.physics.add.collider(enemyTanks, walls);
+    this.physics.add.collider(enemyBullets, walls, (bulletHit, wallHit) => wallHitCallback(bulletHit, wallHit));
+
+    background.setDisplaySize(1600, 1600);
     player.setOrigin(0.5, 0.5).setDisplaySize(60, 60).setCollideWorldBounds(true).setDrag(500, 500);
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 50).setCollideWorldBounds(true);
     
     player.health = 3;
     enemyTanks.children.iterate(function (child) {
-        child.setDisplaySize(60,60);
+        child.setDisplaySize(60, 60);
         child.health = 1;
         child.lastFired = 0;
     });
-
 
     // Set camera zoom
     this.cameras.main.zoom = 0.5;
@@ -161,7 +188,7 @@ function create() {
         // Get bullet from bullets group
         var bullet = playerBullets.get().setActive(true).setVisible(true);
 
-        bullet.setDisplaySize(50,50);
+        bullet.setDisplaySize(50, 50);
 
         if (bullet) {
             bullet.fire(player, reticle);
@@ -169,11 +196,6 @@ function create() {
         }
     }, this);
     
-    // Player bullet hits enemy
-    this.physics.add.collider(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
-
-    // Enemy bullet hits player
-    this.physics.add.collider(player, enemyBullets, (playerHit, bulletHit) => playerHitCallback(playerHit, bulletHit));
 
     // Locks pointer on mousedown
     game.canvas.addEventListener('mousedown', function () {
@@ -186,6 +208,7 @@ function create() {
             game.input.mouse.releasePointerLock();
     }, 0, this);
 
+    
     // Move reticle upon locked pointer move
     this.input.on('pointermove', function (pointer) {
         if (this.input.mouse.locked) {
@@ -211,11 +234,28 @@ function create() {
     }, this);
 
     this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
-
 }
 
 
 function update(time, delta) {
+    if (gameOver) {
+        if (lost && !won) {
+            redBox = this.add.image(400, 400, 'background');
+            redBox.setDisplaySize(1600, 1600).setTintFill(0xff0000);
+            gameOverText = this.add.text(100, 350, 'GAME OVER', { fontSize: '124px', fill: '#000' });
+        }      
+
+        if (won && !lost) {
+            gameOverText = this.add.text(125, 350, 'YOU WON', { fontSize: '124px', fill: '#000' });
+        }
+
+        // stop reticle from moving after game ends
+        reticle.setVelocityX(0);
+        reticle.setVelocityY(0);
+
+        return;
+    }
+
     // Rotates player to face towards reticle
     player.rotation = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
     
@@ -227,8 +267,6 @@ function update(time, delta) {
     // Camera position is average between reticle and player positions
     avgX = ((player.x + reticle.x) / 2) - 400;
     avgY = ((player.y + reticle.y) / 2) - 300;
-    // this.cameras.main.scrollX = avgX;
-    // this.cameras.main.scrollY = avgY;
 
     // Make reticle move with player
     reticle.body.velocity.x = player.body.velocity.x;
@@ -276,7 +314,7 @@ function enemyShoot(time, physics) {
             // Get bullet from bullets group
             var bullet = enemyBullets.get().setActive(true).setVisible(true);
             
-            bullet.setDisplaySize(50,50);
+            bullet.setDisplaySize(50, 50);
 
             if (bullet) {
                 bullet.fire(child, player);
@@ -306,6 +344,10 @@ function enemyHitCallback (enemyHit, bulletHit) {
         // bulletHit.setVelocityY(-50);
         enemyHit.destroy();
         // bulletHit.velocity = 0;
+        if (enemyTanks.countActive(true) === 0) {
+            gameOver = true;
+            won = true;
+        }
     }
     console.log('Score: ', score);
 }
@@ -325,7 +367,8 @@ function playerHitCallback (playerHit, bulletHit) {
         }
         else {
             this.hp1.destroy();
-
+            gameOver = true;
+            lost = true;
             // Game over state should execute here
         }
 
@@ -333,6 +376,10 @@ function playerHitCallback (playerHit, bulletHit) {
         bulletHit.setActive(false).setVisible(false);
         bulletHit.destroy();
     }
+}
+
+function wallHitCallback(bulletHit, wallHit) {
+    bulletHit.destroy();
 }
 
 

@@ -40,6 +40,7 @@ var game = new Phaser.Game(config);
 var gameOver = false;
 var lost = false;
 var won = false;
+var finalHealth = 3;
 // var score = 0;
 
 var Bullet = new Phaser.Class({
@@ -269,7 +270,6 @@ function create() {
 
 function update(time, delta) {
     if (gameOver) {
-
         // Send player score to database
 
         if (lost && !won) {
@@ -282,12 +282,12 @@ function update(time, delta) {
             if (player.health === 3) {
                 star1 = this.add.image(60, 300, 'star')
             }
-            else if (player.health === 2) {
+            // else if (player.health === 2) {
                 
-            }
-            else {
+            // }
+            // else {
                 
-            }
+            // }
             gameOverText = this.add.text(125, 350, 'YOU WON', { fontSize: '124px', fill: '#000' });
         }
 
@@ -397,6 +397,8 @@ function enemyHitCallback (enemyHit, bulletHit) {
         if (enemyTanks.countActive(true) === 0) {
             gameOver = true;
             won = true;
+            finalHealth = player.health;
+            console.log('Final Health: ', finalHealth);
         }
     }
     // console.log('Score: ', score);

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Add Phaser.js library so that HTML runs in Phaser folder -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+  <style>
+    body {
+      display: grid;
+      grid-template-columns: 50% 50%; /* Split the page in half horizontally */
+      height: 100vh;
+      margin: 0;
+    }
+    .game-title {
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+    .game-menu-container {
+	  display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      <!--display: inline-block;
+      vertical-align: top;
+      width: 50%;
+      margin-right: 5%;-->
+    }
+    .game-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+    .game-menu li {
+      display: inline-block;
+      margin: 10px;
+    }
+    .game-menu button {
+      font-size: 20px;
+      padding: 10px 20px;
+    }
+    .scoreboard-container {
+      display: inline-block;
+      vertical-align: top;
+      width: 50%;
+    }
+    .scoreboard {
+      margin-top: 50px;
+    }
+    .scoreboard h1 {
+      margin-bottom: 10px;
+    }
+    .scoreboard table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .scoreboard table th {
+      text-align: center;
+    }
+    .scoreboard table td, .scoreboard table th {
+      padding: 5px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-menu-container">
+  <div class="game-title">Top Rank Tank</div>
+    <ul class="game-menu">
+      <li><button>ARCADE</button></li>
+      <li><button>LEVELS</button></li>
+    </ul>
+  </div>
+  <div class="scoreboard-container">
+    <div class="scoreboard">
+      <h1>Global High Scores</h1>
+      <table>
+        <tr>
+          <th>Player Name</th>
+          <th>Score</th>
+        </tr>
+        <tr>
+        </tr>
+        <!-- Add more rows for additional players -->
+      </table>
+      <h1>Your High Scores</h1>
+      <table>
+        <tr>
+          <th>Score</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <!-- Ensure user gets redirected upon clicking ARCADE -->
+  <script>
+  document.querySelector('.game-menu li:first-child button').addEventListener('click', function() {
+    window.location.href = 'level1.html';
+  });
+</script>
+</body>
+</html>
+

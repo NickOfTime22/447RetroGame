@@ -94,14 +94,14 @@ var Bullet = new Phaser.Class({
 
 function preload() {
     // Load in images and sprites
-    this.load.image('target', '/Game/TRT_Reticle.png');
-    this.load.image('player', '/Game/tank.png');
-    this.load.image('background', '/Game/Level2.png');
-    this.load.image('bullet', '/Game/bullet.png');
-    this.load.image('enemyTank', '/Game/tank.png');
-    this.load.image('health', '/Game/toolbox.png');
-    this.load.image('hwall', '/Game/HWall.png');
-    this.load.image('vwall', '/Game/VWall.png');
+    this.load.image('target', '/static/images/TRT_Reticle.png');
+    this.load.image('player', '/static/images/tank.png');
+    this.load.image('background', '/static/images/Level2.png');
+    this.load.image('bullet', '/static/images/bullet.png');
+    this.load.image('enemyTank', '/static/images/tank.png');
+    this.load.image('health', '/static/images/toolbox.png');
+    this.load.image('hwall', '/static/images/HWall.png');
+    this.load.image('vwall', '/static/images/VWall.png');
 }
 
 function create() {
@@ -123,6 +123,41 @@ function create() {
     walls.create(200, 750, "vwall");
     walls.create(600, 50, "vwall");
     walls.create(200, 50, "vwall");
+
+    invisWalls = this.physics.add.staticGroup();
+    
+    borderTL1 = this.physics.add.staticSprite(-350,-330);
+    borderTL1.setSize(120, 600);
+    
+    borderTL2 = this.physics.add.staticSprite(-335,-350);
+    borderTL2.setSize(600, 120);
+
+    borderTR1 = this.physics.add.staticSprite(1065,-330);
+    borderTR1.setSize(120, 600);
+    
+    borderTR2 = this.physics.add.staticSprite(565,-350);
+    borderTR2.setSize(600, 120);
+    
+    borderBL1 = this.physics.add.staticSprite(-350,565);
+    borderBL1.setSize(120, 600);
+    
+    borderBL2 = this.physics.add.staticSprite(-335,1065);
+    borderBL2.setSize(600, 120);
+    
+    borderBR1 = this.physics.add.staticSprite(1065,565);
+    borderBR1.setSize(120, 600);
+    
+    borderBR2 = this.physics.add.staticSprite(565,1065);
+    borderBR2.setSize(600, 120);
+    
+    invisWalls.add(borderTL1, true);
+    invisWalls.add(borderTL2, true);
+    invisWalls.add(borderTR1, true);
+    invisWalls.add(borderTR2, true);
+    invisWalls.add(borderBL1, true);
+    invisWalls.add(borderBL2, true);
+    invisWalls.add(borderBR1, true);
+    invisWalls.add(borderBR2, true);
     
     // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
@@ -161,6 +196,11 @@ function create() {
     this.physics.add.collider(playerBullets, walls, (bulletHit, wallHit) => wallHitCallback(bulletHit, wallHit));
     this.physics.add.collider(enemyTanks, walls);
     this.physics.add.collider(enemyBullets, walls, (bulletHit, wallHit) => wallHitCallback(bulletHit, wallHit));
+
+    this.physics.add.collider(player, invisWalls);
+    this.physics.add.collider(playerBullets, invisWalls, (bulletHit, wallHit) => wallHitCallback(bulletHit, wallHit));
+    this.physics.add.collider(enemyTanks, invisWalls);
+    this.physics.add.collider(enemyBullets, invisWalls, (bulletHit, wallHit) => wallHitCallback(bulletHit, wallHit));
 
     background.setDisplaySize(1600, 1600);
     player.setOrigin(0.5, 0.5).setDisplaySize(60, 60).setCollideWorldBounds(true).setDrag(500, 500);

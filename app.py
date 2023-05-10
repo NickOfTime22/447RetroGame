@@ -6,10 +6,9 @@ Created on Mon May  1 10:54:46 2023
 @author: brendan
 """
 
-from flask import Flask, request, session, redirect, flash, url_for, jsonify
+from flask import Flask, request, session, redirect, url_for
 from flask.templating import render_template
 import sqlite3
-import json
 import logging
 
 
@@ -21,58 +20,26 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(console_handler)
 
-@app.route('/scores')
+
 def load_global_scores():
     conn = sqlite3.connect('TopRankTanks.db')
     c = conn.cursor()
     c.execute('SELECT * FROM scores ORDER BY score DESC LIMIT 5')
     scores = [{'username': row[1], 'score': row[2]} for row in c.fetchall()]
     return scores
-    
 
-def load_local_scores():
+def load_local_scores(username):
     conn = sqlite3.connect('TopRankTanks.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM scores ORDER BY score DESC LIMIT 5')
-    rows = c.fetchall()
-    scores = []
-    for row in rows:
-        scores.append({'score': row[0]})
-    conn.close()
-    return json.dumps({'data': scores})
-
-
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    conn = sqlite3.connect('TopRankTanks.db')
-    cur = conn.cursor()
-    
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-    
-        cur.execute("SELECT * FROM users WHERE username=?", (username,))
-        user = cur.fetchone()
-    
-        if user is None:
-            session['error'] = 'Invalid username'
-            return render_template('login.html', error=session.get('error'))
-    
-        if user[1] != password:
-            session['error'] = 'Incorrect password'
-            return render_template('login.html', error=session.get('error'))
-    
-        session['username'] = username
-        return redirect(url_for('main_menu', username=username))
-    else:
-        session.pop('error', None)
-        return render_template('login.html', error=None)
+    c.execute('SELECT * FROM scores WHERE username=? ORDER BY score DESC LIMIT 5', (username,))
+    loc_scores = [{'username': row[1], 'score': row[2]} for row in c.fetchall()]
+    return loc_scores
 
 @app.route('/main_menu/<string:username>')
 def main_menu(username):
-    username = request.args.get('username')
     scores = load_global_scores()
-    return render_template('MainMenu.html',username=username,scores=scores)
+    loc_scores = load_local_scores(username)
+    return render_template('MainMenu.html',username=username,scores=scores,loc_scores=loc_scores)
 
 @app.route('/account', methods=['POST','GET'])
 def account():
@@ -104,6 +71,33 @@ def account():
     return render_template('Account.html')
 
     
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    conn = sqlite3.connect('TopRankTanks.db')
+    cur = conn.cursor()
+    
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+    
+        cur.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = cur.fetchone()
+    
+        if user is None:
+            session['error'] = 'Invalid username'
+            return render_template('login.html', error=session.get('error'))
+    
+        if user[1] != password:
+            session['error'] = 'Incorrect password'
+            return render_template('login.html', error=session.get('error'))
+    
+        session['username'] = username
+        return redirect(url_for('main_menu', username=username))
+    else:
+        session.pop('error', None)
+        return render_template('login.html', error=None)
+
+
 @app.route('/')
 def index():
     return render_template('Login.html')

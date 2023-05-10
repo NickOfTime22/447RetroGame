@@ -40,7 +40,7 @@ var game = new Phaser.Game(config);
 var gameOver = false;
 var lost = false;
 var won = false;
-var score = 0;
+// var score = 0;
 
 var Bullet = new Phaser.Class({
 
@@ -96,9 +96,9 @@ function preload() {
     // Load in images and sprites
     this.load.image('target', '/static/images/TRT_Reticle.png');
     this.load.image('player', '/static/images/tank.png');
-    this.load.image('background', '/static/images/Level1.png');
+    this.load.image('background', '/static/images/newLevel1.png');
     this.load.image('bullet', '/static/images/bullet.png');
-    this.load.image('enemyTank', '/static/images/tank.png');
+    this.load.image('enemyTank', '/static/images/enemyTank.png');
     this.load.image('health', '/static/images/toolbox.png');
     this.load.image('wall', '/static/images/HWall.png');
 }
@@ -158,7 +158,7 @@ function create() {
 
     // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
-    enemyTanks.create(1000, 400, 'enemyTank');
+    // enemyTanks.create(1000, 400, 'enemyTank');
     enemyTanks.create(400, 1000, 'enemyTank');
     enemyTanks.create(-200, 400, 'enemyTank');
     enemyTanks.create(400, -200, 'enemyTank');
@@ -194,7 +194,7 @@ function create() {
     
     player.health = 3;
     enemyTanks.children.iterate(function (child) {
-        child.setDisplaySize(60, 60);
+        child.setDisplaySize(120, 120);
         child.health = 1;
         child.lastFired = 0;
     });
@@ -262,7 +262,7 @@ function create() {
         }
     }, this);
 
-    this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
+    // this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
 }
 
 
@@ -335,11 +335,11 @@ function update(time, delta) {
     
     enemyShoot(time, this.physics);
 
-    this.scoreText.setText(`Score: ${score}`);
+    // this.scoreText.setText(`Score: ${score}`);
 }
 
 function goHome() {
-    location.href = './Levels.html';
+    location.href = '/levels/{{username}}';
 }
 
 function enemyShoot(time, physics) {
@@ -376,7 +376,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
             enemyHit.setActive(false).setVisible(false);
         }
 
-        score += 10;
+        // score += 10;
 
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
@@ -389,7 +389,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
             won = true;
         }
     }
-    console.log('Score: ', score);
+    // console.log('Score: ', score);
 }
 
 function playerHitCallback (playerHit, bulletHit) {

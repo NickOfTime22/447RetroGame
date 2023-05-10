@@ -40,7 +40,7 @@ var game = new Phaser.Game(config);
 var gameOver = false;
 var lost = false;
 var won = false;
-var score = 0;
+// var score = 0;
 
 var Bullet = new Phaser.Class({
 
@@ -270,7 +270,7 @@ function create() {
         }
     }, this);
 
-    this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
+    // this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
 }
 
 
@@ -340,11 +340,11 @@ function update(time, delta) {
     
     enemyShoot(time, this.physics);
 
-    this.scoreText.setText(`Score: ${score}`);
+    // this.scoreText.setText(`Score: ${score}`);
 }
 
 function goHome() {
-    location.href = './Levels.html';
+    location.href = '/levels/{{username}}';
 }
 
 function enemyShoot(time, physics) {
@@ -381,7 +381,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
             enemyHit.setActive(false).setVisible(false);
         }
 
-        score += 10;
+        // score += 10;
 
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
@@ -394,7 +394,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
             won = true;
         }
     }
-    console.log('Score: ', score);
+    // console.log('Score: ', score);
 }
 
 function playerHitCallback (playerHit, bulletHit) {

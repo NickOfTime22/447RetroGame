@@ -230,7 +230,7 @@
             if (gameOver) {
 
                 // Send player score to database
-
+                game.input.mouse.releasePointerLock();
                 if (lost && !won) {
                     redBox = this.add.image(400, 400, 'background');
                     redBox.setDisplaySize(1600, 1600).setTintFill(0xff0000);

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+	</style>
+  </head>
+  <body>
+    <div class="container">
+      	<div class="game-container">
+		<br>
+  		<div class="game-title">Top Rank Tank</div>
+  			<ul class="game-menu">
+    			<li><form action="/arcade/{{username}}" method="post">
+    					<button type="submit">ARCADE</button>
+					</form></li>
+    			<li><form action="/levels/{{username}}" method="post">
+    					<button type="submit">LEVELS</button>
+					</form>
+</li>
+			<br>
+  			</ul>
+		</div>
+     	<div id="scoreboard">
+  		<h2>Global Top 5 Scores</h2>
+  		<table>
+    		<thead>
+      			<tr>
+					<th></th>
+        			<th>Name</th>
+        			<th>Score</th>
+      			</tr>
+    		</thead>
+    		<tbody>
+        		{% for score in scores %}
+          			<tr>
+            			<td>{{ loop.index }}</td>
+            			<td>{{ score.username }}</td>
+            			<td>{{ score.score }}</td>
+          			</tr>
+        		{% endfor %}
+      		</tbody>
+  		</table>
+		<h2>Your Top 5 Scores</h2>
+		<p>Welcome, {{ username }}!</p>
+		  {% if loc_scores|length > 0 %}
+		  <table>
+      		<thead>
+        		<tr>
+          			<th></th>
+          			<th>Score</th>
+        		</tr>
+      		</thead>
+      		<tbody>
+        	{% for score in loc_scores %}
+          	<tr>
+            	<td>{{ loop.index }}</td>
+            	<td>{{ score.score }}</td>
+         	</tr>
+        	{% endfor %}
+      		</tbody>
+    	 </table>
+  		 {% else %}
+    		<p>You don't have any scores yet.</p>
+  		 {% endif %}
+	    </div>
+    </div>
+  </body>
+</html>

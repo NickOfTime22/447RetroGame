@@ -398,7 +398,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
             gameOver = true;
             won = true;
             finalHealth = player.health;
-            console.log('Final Health: ', finalHealth);
+            location.href ='/updateDB/1/'+finalHealth+'/{{username}}';
         }
     }
     // console.log('Score: ', score);

@@ -40,6 +40,7 @@ var game = new Phaser.Game(config);
 var gameOver = false;
 var lost = false;
 var won = false;
+var finalHealth = 3;
 // var score = 0;
 
 var Bullet = new Phaser.Class({
@@ -102,6 +103,7 @@ function preload() {
     this.load.image('health', '/static/images/toolbox.png');
     this.load.image('hwall', '/static/images/HWall.png');
     this.load.image('vwall', '/static/images/VWall.png');
+    this.load.image('star', '/static/images/star.png');
 }
 
 function create() {
@@ -401,6 +403,8 @@ function enemyHitCallback (enemyHit, bulletHit) {
         if (enemyTanks.countActive(true) === 0) {
             gameOver = true;
             won = true;
+            finalHealth = player.health;
+            location.href ='/updateDB/2/'+finalHealth+'/{{username}}';
         }
     }
     // console.log('Score: ', score);

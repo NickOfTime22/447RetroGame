@@ -20,14 +20,37 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(console_handler)
 
-
-@app.route('/updateDB/1/<int:finalHealth>/<string:username>', methods=['POST','GET'])
-def updateOne(finalHealth,username):
+@app.route('/updateDB/arcade/<int:score>/<string:username>', methods=['POST','GET'])
+def updateScore(score,username):
     conn = sqlite3.connect('TopRankTanks.db')
     c = conn.cursor()
-    current = c.execute('SELECT levelOne FROM Users WHERE username=?',(username,)).fetchone()
-    if(current[0] < finalHealth):
-        c.execute('UPDATE Users SET levelOne =? WHERE username=?',(finalHealth,username,))
+    count = c.execute('SELECT COUNT (*) FROM Scores').fetchone()
+    count = count[0]
+    c.execute('INSERT INTO Scores VALUES (?,?,?)',(count+1,username,score))
+    conn.commit()
+    return redirect(url_for('main_menu', username=username))
+
+@app.route('/arcade/<string:username>', methods=['POST','GET'])
+def arcade(username):
+    return render_template('Arcade.html', username=username)
+
+
+@app.route('/updateDB/<int:level>/<int:finalHealth>/<string:username>', methods=['POST','GET'])
+def updateOne(level,finalHealth,username):
+    conn = sqlite3.connect('TopRankTanks.db')
+    c = conn.cursor()
+    if(level == 1):
+        current = c.execute('SELECT levelOne FROM Users WHERE username=?',(username,)).fetchone()
+        if(current[0] < finalHealth):
+            c.execute('UPDATE Users SET levelOne =? WHERE username=?',(finalHealth,username,))
+    if(level == 2):
+        current = c.execute('SELECT levelTwo FROM Users WHERE username=?',(username,)).fetchone()
+        if(current[0] < finalHealth):
+            c.execute('UPDATE Users SET levelTwo =? WHERE username=?',(finalHealth,username,))
+    if(level == 3):
+        current = c.execute('SELECT levelThree FROM Users WHERE username=?',(username,)).fetchone()
+        if(current[0] < finalHealth):
+            c.execute('UPDATE Users SET levelThree =? WHERE username=?',(finalHealth,username,))
     conn.commit()
     return render_template('Levels.html', username=username)
     
@@ -42,7 +65,6 @@ def levelTwo(username):
 @app.route('/levelOne/<string:username>', methods=['POST'])
 def levelOne(username):
     return render_template('LevelOne.html',username=username)
-
 
 @app.route('/levels/<string:username>', methods=['POST','GET'])
 def levels(username):

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Page</title>
+  <link rel="" href=""> <!-- External CSS file for styling -->
+  <style>
+    /* CSS Grid layout for login page */
+    body {
+      display: grid;
+      grid-template-columns: 50% 50%; /* Split the page in half horizontally */
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #f0f0f0;
+      height: 100%; /* Set the height of the login container to 100% to fill the entire column */
+    }
+
+    .login-container form {
+      max-width: 300px;
+      width: 100%;
+      padding: 20px;
+      background: #fff;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .login-container h1 {
+      font-size: 24px;
+    }
+
+    .login-container label,
+    .login-container input {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .login-container input[type="submit"] {
+      background: #007bff;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .login-container input[type="submit"]:hover {
+      background: #0056b3;
+    }
+
+    .game-container {
+      background: #000; /* Placeholder background color for game */
+      height: 100%; /* Set the height of the game container to 100% to fill the entire column */
+      display: flex;
+    }
+
+    .game-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <img src="{{ url_for('static', filename='/images/game_cover.jpg') }}" alt="game_cover">
+  </div>
+  <div class="login-container">
+    <h1>Create Your Account</h1>
+	{% if session['error'] %}
+	<div class="alert alert-danger">{{ session['error'] }}</div>
+	{% endif %}
+    <form action="/account" method="post"> <!-- Replace "login.php" with your own server-side script for processing login data -->
+      <label for="username">Create a Username</label>
+      <input type="text" id="username" name="username" placeholder="Type your username" required>
+      <label for="password">Create a Password</label>
+      <input type="password" id="password" name="password" placeholder="Type your password" required>
+	  <label for ="confirm">Confirm your Password</label>
+	  <input type="confirm" id="confirm" name="confirm" placeholder="Retype your password" required>
+      <input type="submit" value="Create Account">
+    </form>
+    <p>Already have an account? <a href="/login">Login Page</a></p> <!-- Replace "register.html" with the URL of your registration page -->
+    <p>Want to play without logging in? <a href="/main_menu/guest">Play as guest</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Levels</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>LEVELS</h1>
+    <p>Choose a level to play:</p>
+    <ul>
+      <li><form action="/levelOne/{{username}}" method="post">
+    					<button type="submit">Level 1</button>
+					</form></li>
+      <br>
+      <li><form action="/levelTwo/{{username}}" method="post">
+    					<button type="submit">Level 2</button>
+					</form></li>
+      <br>
+      <li><form action="/levelThree/{{username}}" method="post">
+    					<button type="submit">Level 3</button>
+					</form></li>
+	  <br>
+      <li><form action="/levelFour/{{username}}" method="post">
+    					<button type="submit">Level 4</button>
+					</form></li>
+	  <br>
+	  <li><form action="/main_menu/{{username}}" method="post">
+    					<button type="submit">Main Menu</button>
+					</form></li>
+    </ul>
+  </div>
+</body>
+</html>

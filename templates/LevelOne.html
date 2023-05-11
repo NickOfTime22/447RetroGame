@@ -101,7 +101,9 @@ function preload() {
     this.load.image('bullet', '/static/images/bullet.png');
     this.load.image('enemyTank', '/static/images/enemyTank.png');
     this.load.image('health', '/static/images/toolbox.png');
-    this.load.image('wall', '/static/images/HWall.png');
+    this.load.image('hwall', '/static/images/HWall.png');
+    this.load.image('vwall', '/static/images/VWall.png');
+    this.load.image('star', '/static/images/star.png');
 }
 
 function create() {
@@ -112,8 +114,8 @@ function create() {
     playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     walls = this.physics.add.staticGroup();
-    walls.create(400, 550, "wall");
-    walls.create(400, 250, "wall");
+    walls.create(400, 550, "hwall");
+    walls.create(400, 250, "hwall");
 
     invisWalls = this.physics.add.staticGroup();
     
@@ -159,7 +161,6 @@ function create() {
 
     // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
-    // enemyTanks.create(1000, 400, 'enemyTank');
     enemyTanks.create(400, 1000, 'enemyTank');
     enemyTanks.create(-200, 400, 'enemyTank');
     enemyTanks.create(400, -200, 'enemyTank');
@@ -269,16 +270,32 @@ function create() {
 
 function update(time, delta) {
     if (gameOver) {
-
         // Send player score to database
 
+        game.input.mouse.releasePointerLock();
+
         if (lost && !won) {
+            won = true;
             redBox = this.add.image(400, 400, 'background');
             redBox.setDisplaySize(1600, 1600).setTintFill(0xff0000);
             gameOverText = this.add.text(75, 350, 'GAME OVER', { fontSize: '124px', fill: '#000' });
+			finalHealth = 0;
         }      
 
-        if (won && !lost) {            
+        if (won && !lost) {
+            lost = true;
+            if (player.health === 3) {
+                star1 = this.add.image(60, 150, 'star');
+                star2 = this.add.image(400, 150, 'star');
+                star3 = this.add.image(740, 150, 'star');
+            }
+            else if (player.health === 2) {
+                star1 = this.add.image(200, 150, 'star');
+                star2 = this.add.image(600, 150, 'star');
+            }
+            else {
+                star1 = this.add.image(400, 150, 'star');
+            }
             gameOverText = this.add.text(125, 350, 'YOU WON', { fontSize: '124px', fill: '#000' });
         }
 
@@ -340,7 +357,7 @@ function update(time, delta) {
 }
 
 function goHome() {
-    location.href = '/levels/{{username}}';
+    location.href ='/updateDB/1/'+finalHealth+'/{{username}}';
 }
 
 function enemyShoot(time, physics) {
@@ -388,8 +405,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
         if (enemyTanks.countActive(true) === 0) {
             gameOver = true;
             won = true;
-			finalHealth = player.health
-			location.href ='/updateDB/1/'+finalHealth+'/{{username}}';
+            finalHealth = player.health;
         }
     }
     // console.log('Score: ', score);

@@ -6,7 +6,7 @@
 <body>
 
 <script>
-
+    
 var config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
@@ -97,7 +97,7 @@ function preload() {
     // Load in images and sprites
     this.load.image('target', '/static/images/TRT_Reticle.png');
     this.load.image('player', '/static/images/tank.png');
-    this.load.image('background', '/static/images/newLevel2.png');
+    this.load.image('background', '/static/images/Level4.png');
     this.load.image('bullet', '/static/images/bullet.png');
     this.load.image('enemyTank', '/static/images/enemyTank.png');
     this.load.image('health', '/static/images/toolbox.png');
@@ -114,18 +114,7 @@ function create() {
     playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     walls = this.physics.add.staticGroup();
-    // enemyTanks = this.physics.add.group({
-    //     key: 'enemyTank',
-    //     repeat: 9, // makes 10 total tanks in group
-    //     setXY: { x: 12, y: 300, stepX: 70 }
-    //     // need random number, Phaser.Math.Between(min, max);
-    // });
-
-    walls.create(600, 750, "vwall");
-    walls.create(200, 750, "vwall");
-    walls.create(600, 50, "vwall");
-    walls.create(200, 50, "vwall");
-
+    
     invisWalls = this.physics.add.staticGroup();
     
     borderTL1 = this.physics.add.staticSprite(-350,-330);
@@ -160,24 +149,20 @@ function create() {
     invisWalls.add(borderBL2, true);
     invisWalls.add(borderBR1, true);
     invisWalls.add(borderBR2, true);
-    
+
+    // enemyTanks = this.physics.add.group({
+    //     key: 'enemyTank',
+    //     repeat: 9, // makes 10 total tanks in group
+    //     setXY: { x: 12, y: 300, stepX: 70 }
+    //     // need random number, Phaser.Math.Between(min, max);
+    // });
+
     // spawns enemy tanks in hardcoded locations
     enemyTanks = this.physics.add.group();
-    enemyTanks.create(-100, -100, 'enemyTank');
-    enemyTanks.create(0, -100, 'enemyTank');
-    enemyTanks.create(100, -100, 'enemyTank');
-
-    enemyTanks.create(700, -100, 'enemyTank');
-    enemyTanks.create(800, -100, 'enemyTank');
-    enemyTanks.create(900, -100, 'enemyTank');
-
-    enemyTanks.create(-100, 900, 'enemyTank');
-    enemyTanks.create(0, 900, 'enemyTank');
-    enemyTanks.create(100, 900, 'enemyTank');
-
-    enemyTanks.create(700, 900, 'enemyTank');
-    enemyTanks.create(800, 900, 'enemyTank');
-    enemyTanks.create(900, 900, 'enemyTank');
+    enemyTanks.create(1000, 400, 'enemyTank');
+    enemyTanks.create(400, 1000, 'enemyTank');
+    enemyTanks.create(-200, 400, 'enemyTank');
+    enemyTanks.create(400, -200, 'enemyTank');
 
     // Add background, player, and reticle sprites
     player = this.physics.add.sprite(400, 400, 'player');
@@ -185,7 +170,7 @@ function create() {
     hp1 = this.add.image(-325, -350, 'health').setDisplaySize(120,120);
     hp2 = this.add.image(-200, -350, 'health').setDisplaySize(120,120);
     hp3 = this.add.image(-74, -350, 'health').setDisplaySize(120,120);
-    
+
     // Player bullet hits enemy
     this.physics.add.collider(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
     this.physics.add.overlap(enemyTanks, playerBullets, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
@@ -207,7 +192,7 @@ function create() {
     background.setDisplaySize(1600, 1600);
     player.setOrigin(0.5, 0.5).setDisplaySize(60, 60).setCollideWorldBounds(true).setDrag(500, 500);
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 50).setCollideWorldBounds(true);
-    
+
     player.health = 3;
     enemyTanks.children.iterate(function (child) {
         child.setDisplaySize(120, 120);
@@ -238,10 +223,9 @@ function create() {
 
         if (bullet) {
             bullet.fire(player, reticle);
-            // this.physics.add.collider(enemyTanks, bullet, (enemyHit, bulletHit) => enemyHitCallback(enemyHit, bulletHit));
         }
     }, this);
-    
+
 
     // Locks pointer on mousedown
     game.canvas.addEventListener('mousedown', function () {
@@ -254,7 +238,7 @@ function create() {
             game.input.mouse.releasePointerLock();
     }, 0, this);
 
-    
+
     // Move reticle upon locked pointer move
     this.input.on('pointermove', function (pointer) {
         if (this.input.mouse.locked) {
@@ -279,21 +263,22 @@ function create() {
         }
     }, this);
 
-    // this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
+    this.scoreText = this.add.text(750, -375, 'score: 0', { fontSize: '78px', fill: '#000' });
 }
 
 
 function update(time, delta) {
     if (gameOver) {
-        game.input.mouse.releasePointerLock();
 
+        // Send player score to database
+        game.input.mouse.releasePointerLock();
         if (lost && !won) {
             won = true;
             redBox = this.add.image(400, 400, 'background');
             redBox.setDisplaySize(1600, 1600).setTintFill(0xff0000);
             gameOverText = this.add.text(75, 350, 'GAME OVER', { fontSize: '124px', fill: '#000' });
 			finalHealth = 0;
-        }      
+        }
 
         if (won && !lost) {
             lost = true;
@@ -325,12 +310,12 @@ function update(time, delta) {
 
     // Rotates player to face towards reticle
     player.rotation = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
-    
+
     // Rotates enemy to face towards player
     enemyTanks.children.iterate(function (child) {
         child.rotation = Phaser.Math.Angle.Between(child.x, child.y, player.x, player.y);
     });
-    
+
     // Camera position is average between reticle and player positions
     avgX = ((player.x + reticle.x) / 2) - 400;
     avgY = ((player.y + reticle.y) / 2) - 300;
@@ -338,10 +323,10 @@ function update(time, delta) {
     // Make reticle move with player
     reticle.body.velocity.x = player.body.velocity.x;
     reticle.body.velocity.y = player.body.velocity.y;
-    
+
     // Constrain position of reticle
     constrainReticle(reticle, 300);
-    
+
     if (cursors.left.isDown) {
         // Player move left
         player.setVelocityX(-180);
@@ -352,7 +337,7 @@ function update(time, delta) {
         // Stop player when not pressing key
         player.setVelocityX(0);
     }
-    
+
     if (cursors.up.isDown) {
         // Player move up
         player.setVelocityY(-180);
@@ -363,14 +348,14 @@ function update(time, delta) {
         // Stop player when not pressing key
         player.setVelocityY(0);
     }
-    
+
     enemyShoot(time, this.physics);
 
     // this.scoreText.setText(`Score: ${score}`);
 }
 
 function goHome() {
-    location.href ='/updateDB/2/'+finalHealth+'/{{username}}';
+    location.href ='/updateDB/4/'+finalHealth+'/{{username}}';
 }
 
 function enemyShoot(time, physics) {
@@ -378,18 +363,18 @@ function enemyShoot(time, physics) {
         if (child.active === false) {
             return;
         }
-        
+
         if ((time - child.lastFired) > 1500) {
             child.lastFired = time;
-            
+
             // Get bullet from bullets group
             var bullet = enemyBullets.get().setActive(true).setVisible(true);
-            
+
             bullet.setDisplaySize(50, 50);
 
             if (bullet) {
                 bullet.fire(child, player);
-                
+
                 // Add collider between bullet and player
             }
         }
@@ -419,6 +404,7 @@ function enemyHitCallback (enemyHit, bulletHit) {
             gameOver = true;
             won = true;
             finalHealth = player.health;
+            
         }
     }
     // console.log('Score: ', score);
@@ -450,6 +436,7 @@ function playerHitCallback (playerHit, bulletHit) {
     }
 }
 
+// Destroys bullet when it collides with a wall
 function wallHitCallback(bulletHit, wallHit) {
     bulletHit.destroy();
 }
@@ -478,7 +465,7 @@ function constrainVelocity (sprite, maxVelocity) {
 function constrainReticle(reticle, radius) {
     var distX = reticle.x - player.x; // X distance between player & reticle
     var distY = reticle.y - player.y; // Y distance between player & reticle
-    
+
     // Ensures reticle cannot be moved offscreen
     if (distX > 800)
     reticle.x = player.x + 800;
@@ -495,12 +482,10 @@ function constrainReticle(reticle, radius) {
     if (distBetween > radius) {
         // Place reticle on perimeter of circle on line intersecting player & reticle
         var scale = distBetween / radius;
-        
+
         reticle.x = player.x + (reticle.x - player.x) / scale;
         reticle.y = player.y + (reticle.y - player.y) / scale;
     }
-}
-
-</script>
+}</script>
 </body>
 </html>

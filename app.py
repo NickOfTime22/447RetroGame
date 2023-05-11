@@ -51,9 +51,17 @@ def updateOne(level,finalHealth,username):
         current = c.execute('SELECT levelThree FROM Users WHERE username=?',(username,)).fetchone()
         if(current[0] < finalHealth):
             c.execute('UPDATE Users SET levelThree =? WHERE username=?',(finalHealth,username,))
+    if(level == 4):
+        current = c.execute('SELECT levelFour FROM Users WHERE username=?',(username,)).fetchone()
+        if(current[0] < finalHealth):
+            c.execute('UPDATE Users SET levelFour =? WHERE username=?',(finalHealth,username,))
     conn.commit()
     return render_template('Levels.html', username=username)
     
+@app.route('/levelFour/<string:username>', methods=['POST'])
+def levelFour(username):
+    return render_template('LevelFour.html',username=username)
+
 @app.route('/levelThree/<string:username>', methods=['POST'])
 def levelThree(username):
     return render_template('LevelThree.html',username=username)
@@ -84,7 +92,7 @@ def load_local_scores(username):
     loc_scores = [{'username': row[1], 'score': row[2]} for row in c.fetchall()]
     return loc_scores
 
-@app.route('/main_menu/<string:username>')
+@app.route('/main_menu/<string:username>', methods=['POST','GET'])
 def main_menu(username):
     scores = load_global_scores()
     loc_scores = load_local_scores(username)
@@ -109,7 +117,7 @@ def account():
                 session['error'] = 'Passwords do not match'
                 return render_template('account.html', error=session.get('error'))
             else:
-                cur.execute("INSERT INTO Users (username, password, levelOne, levelTwo, levelThree) VALUES (?,?,0,0,0)", (username,password))
+                cur.execute("INSERT INTO Users (username, password, levelOne, levelTwo, levelThree, levelFour) VALUES (?,?,0,0,0,0)", (username,password))
                 conn.commit()
                 return redirect('/login')
                 

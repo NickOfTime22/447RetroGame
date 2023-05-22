@@ -1,68 +1,149 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-	</style>
-  </head>
-  <body>
-    <div class="container">
-      	<div class="game-container">
-		<br>
-  		<div class="game-title">Top Rank Tank</div>
-  			<ul class="game-menu">
-    			<li><form action="/arcade/{{username}}" method="post">
-    					<button type="submit">ARCADE</button>
-					</form></li>
-    			<li><form action="/levels/{{username}}" method="post">
-    					<button type="submit">LEVELS</button>
-					</form>
-</li>
-			<br>
-  			</ul>
-		</div>
-     	<div id="scoreboard">
-  		<h2>Global Top 5 Scores</h2>
-  		<table>
-    		<thead>
-      			<tr>
-					<th></th>
-        			<th>Name</th>
-        			<th>Score</th>
-      			</tr>
-    		</thead>
-    		<tbody>
-        		{% for score in scores %}
-          			<tr>
-            			<td>{{ loop.index }}</td>
-            			<td>{{ score.username }}</td>
-            			<td>{{ score.score }}</td>
-          			</tr>
-        		{% endfor %}
-      		</tbody>
-  		</table>
-		<h2>Your Top 5 Scores</h2>
-		<p>Welcome, {{ username }}!</p>
-		  {% if loc_scores|length > 0 %}
-		  <table>
-      		<thead>
-        		<tr>
-          			<th></th>
-          			<th>Score</th>
-        		</tr>
-      		</thead>
-      		<tbody>
-        	{% for score in loc_scores %}
-          	<tr>
-            	<td>{{ loop.index }}</td>
-            	<td>{{ score.score }}</td>
-         	</tr>
-        	{% endfor %}
-      		</tbody>
-    	 </table>
-  		 {% else %}
-    		<p>You don't have any scores yet.</p>
-  		 {% endif %}
-	    </div>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 30px;
+    }
+    
+    .game-container {
+      margin-bottom: 30px;
+    }
+    
+    .game-title {
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .game-menu {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .game-menu li {
+      margin-right: 10px;
+    }
+    
+    .game-menu button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    #scoreboard {
+      margin-top: 30px;
+    }
+    
+    #scoreboard h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+    
+    table th, table td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    
+    table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    
+    .no-scores {
+      margin-top: 20px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="game-container">
+      <div class="game-title">Top Rank Tanks</div>
+      <ul class="game-menu">
+        <li>
+          <form action="/arcade/{{username}}" method="post">
+            <button type="submit">ARCADE</button>
+          </form>
+        </li>
+        <li>
+          <form action="/levels/{{username}}" method="post">
+            <button type="submit">LEVELS</button>
+          </form>
+        </li>
+		<li>
+          <form action="/">
+            <button type="submit">RETURN TO LOGIN</button>
+          </form>
+        </li>
+      </ul>
+    </div>
+    <div id="scoreboard">
+      <h2>Global Top 5 Scores</h2>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for score in scores %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ score.username }}</td>
+              <td>{{ score.score }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <h2>Your Top 5 Scores</h2>
+      <p>Welcome, {{ username }}!</p>
+	  {% if username == "guest" %}
+        <p class="no-scores">Create an Account to save your scores.</p>
+      {% else %}
+      	{% if loc_scores|length > 0 %}
+        	<table>
+          		<thead>
+            		<tr>
+              		<th></th>
+              		<th>Score</th>
+            		</tr>
+          		</thead>
+          	<tbody>
+            	{% for score in loc_scores %}
+              		<tr>
+                		<td>{{ loop.index }}</td>
+                		<td>{{ score.score }}</td>
+              		</tr>
+            	{% endfor %}
+          	</tbody>
+        	</table>
+      	{% else %}
+        	<p class="no-scores">You don't have any scores yet.</p>
+      	{% endif %}
+	  {% endif %}
+	  </div>
+
     </div>
   </body>
 </html>

@@ -1,35 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Levels</title>
+  <meta charset="UTF-8">
+  <title>Levels</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 30px;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    p {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    li {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .stars {
+      margin-top: 10px;
+    }
+    
+    .star {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+      display: inline-block;
+      background: url("{{ url_for('static', filename='images/star.png') }}");
+      background-size: contain;
+    }
+  </style>
 </head>
-
 <body>
   <div class="container">
     <h1>LEVELS</h1>
     <p>Choose a level to play:</p>
     <ul>
-      <li><form action="/levelOne/{{username}}" method="post">
-    					<button type="submit">Level 1</button>
-					</form></li>
-      <br>
-      <li><form action="/levelTwo/{{username}}" method="post">
-    					<button type="submit">Level 2</button>
-					</form></li>
-      <br>
-      <li><form action="/levelThree/{{username}}" method="post">
-    					<button type="submit">Level 3</button>
-					</form></li>
-	  <br>
-      <li><form action="/levelFour/{{username}}" method="post">
-    					<button type="submit">Level 4</button>
-					</form></li>
-	  <br>
-	  <li><form action="/main_menu/{{username}}" method="post">
-    					<button type="submit">Main Menu</button>
-					</form></li>
+      <li>
+        <form action="/levelOne/{{username}}" method="post">
+          <button type="submit">Level 1</button>
+          <div class="stars" id="levelOneStars"></div>
+        </form>
+      </li>
+      <li>
+        <form action="/levelTwo/{{username}}" method="post">
+          <button type="submit">Level 2</button>
+          <div class="stars" id="levelTwoStars"></div>
+        </form>
+      </li>
+      <li>
+        <form action="/levelThree/{{username}}" method="post">
+          <button type="submit">Level 3</button>
+          <div class="stars" id="levelThreeStars"></div>
+        </form>
+      </li>
+      <li>
+        <form action="/levelFour/{{username}}" method="post">
+          <button type="submit">Level 4</button>
+          <div class="stars" id="levelFourStars"></div>
+        </form>
+      </li>
+      <li>
+        <form action="/main_menu/{{username}}" method="post">
+          <button type="submit">Main Menu</button>
+        </form>
+      </li>
     </ul>
   </div>
+
+  <script>
+    // Replace these variables with the actual number of stars for each level
+    const levelOneStarsCount = "{{level_one_stars}}"; // Example: number of stars for level 1
+    const levelTwoStarsCount = "{{level_two_stars}}"; // Example: number of stars for level 2
+    const levelThreeStarsCount = "{{level_three_stars}}"; // Example: number of stars for level 3
+    const levelFourStarsCount = "{{level_four_stars}}"; // Example: number of stars for level 4
+
+    const levelOneStarsContainer = document.getElementById('levelOneStars');
+    const levelTwoStarsContainer = document.getElementById('levelTwoStars');
+    const levelThreeStarsContainer = document.getElementById('levelThreeStars');
+    const levelFourStarsContainer = document.getElementById('levelFourStars');
+
+    // Generate stars for level 1
+    for (let i = 0; i < levelOneStarsCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      levelOneStarsContainer.appendChild(star);
+    }
+
+    // Generate stars for level 2
+    for (let i = 0; i < levelTwoStarsCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      levelTwoStarsContainer.appendChild(star);
+    }
+
+    // Generate stars for level 3
+    for (let i = 0; i < levelThreeStarsCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      levelThreeStarsContainer.appendChild(star);
+    }
+
+    // Generate stars for level 4
+    for (let i = 0; i < levelFourStarsCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      levelFourStarsContainer.appendChild(star);
+    }
+  </script>
 </body>
 </html>
+
+

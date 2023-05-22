@@ -26,8 +26,9 @@ def updateScore(score,username):
     c = conn.cursor()
     count = c.execute('SELECT COUNT (*) FROM Scores').fetchone()
     count = count[0]
-    c.execute('INSERT INTO Scores VALUES (?,?,?)',(count+1,username,score))
-    conn.commit()
+    if(not username=="guest"):
+        c.execute('INSERT INTO Scores VALUES (?,?,?)',(count+1,username,score))
+        conn.commit()
     return redirect(url_for('main_menu', username=username))
 
 @app.route('/arcade/<string:username>', methods=['POST','GET'])
@@ -39,24 +40,42 @@ def arcade(username):
 def updateOne(level,finalHealth,username):
     conn = sqlite3.connect('TopRankTanks.db')
     c = conn.cursor()
-    if(level == 1):
-        current = c.execute('SELECT levelOne FROM Users WHERE username=?',(username,)).fetchone()
-        if(current[0] < finalHealth):
-            c.execute('UPDATE Users SET levelOne =? WHERE username=?',(finalHealth,username,))
-    if(level == 2):
-        current = c.execute('SELECT levelTwo FROM Users WHERE username=?',(username,)).fetchone()
-        if(current[0] < finalHealth):
-            c.execute('UPDATE Users SET levelTwo =? WHERE username=?',(finalHealth,username,))
-    if(level == 3):
-        current = c.execute('SELECT levelThree FROM Users WHERE username=?',(username,)).fetchone()
-        if(current[0] < finalHealth):
-            c.execute('UPDATE Users SET levelThree =? WHERE username=?',(finalHealth,username,))
-    if(level == 4):
-        current = c.execute('SELECT levelFour FROM Users WHERE username=?',(username,)).fetchone()
-        if(current[0] < finalHealth):
-            c.execute('UPDATE Users SET levelFour =? WHERE username=?',(finalHealth,username,))
-    conn.commit()
-    return render_template('Levels.html', username=username)
+    if(not username=="guest"):
+        if(level == 1):
+            current = c.execute('SELECT levelOne FROM Users WHERE username=?',(username,)).fetchone()
+            if(current[0] < finalHealth):
+                c.execute('UPDATE Users SET levelOne =? WHERE username=?',(finalHealth,username,))
+        if(level == 2):
+            current = c.execute('SELECT levelTwo FROM Users WHERE username=?',(username,)).fetchone()
+            if(current[0] < finalHealth):
+                c.execute('UPDATE Users SET levelTwo =? WHERE username=?',(finalHealth,username,))
+        if(level == 3):
+            current = c.execute('SELECT levelThree FROM Users WHERE username=?',(username,)).fetchone()
+            if(current[0] < finalHealth):
+                c.execute('UPDATE Users SET levelThree =? WHERE username=?',(finalHealth,username,))
+        if(level == 4):
+            current = c.execute('SELECT levelFour FROM Users WHERE username=?',(username,)).fetchone()
+            if(current[0] < finalHealth):
+                c.execute('UPDATE Users SET levelFour =? WHERE username=?',(finalHealth,username,))
+        conn.commit()
+    c.execute('SELECT * FROM Users WHERE username=?', (username,))
+    cursor = conn.execute("SELECT levelOne FROM Users WHERE username = ?", (username,))
+    level_one_stars = cursor.fetchone()
+    level_one_stars =level_one_stars[0]
+    cursor = conn.execute("SELECT levelTwo FROM Users WHERE username = ?", (username,))
+    level_two_stars = cursor.fetchone()
+    level_two_stars =level_two_stars[0]
+    cursor = conn.execute("SELECT levelThree FROM Users WHERE username = ?", (username,))
+    level_three_stars = cursor.fetchone()
+    level_three_stars =level_three_stars[0]
+    cursor = conn.execute("SELECT levelFour FROM Users WHERE username = ?", (username,))
+    level_four_stars = cursor.fetchone()
+    level_four_stars =level_four_stars[0]
+    return render_template('Levels.html', username=username,
+                           level_one_stars=level_one_stars, 
+                           level_two_stars=level_two_stars,
+                           level_three_stars=level_three_stars,
+                           level_four_stars=level_four_stars)
     
 @app.route('/levelFour/<string:username>', methods=['POST'])
 def levelFour(username):
@@ -76,7 +95,27 @@ def levelOne(username):
 
 @app.route('/levels/<string:username>', methods=['POST','GET'])
 def levels(username):
-    return render_template('Levels.html', username=username)
+    conn = sqlite3.connect('TopRankTanks.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM Users WHERE username=?', (username,))
+    cursor = conn.execute("SELECT levelOne FROM Users WHERE username = ?", (username,))
+    level_one_stars = cursor.fetchone()
+    level_one_stars =level_one_stars[0]
+    cursor = conn.execute("SELECT levelTwo FROM Users WHERE username = ?", (username,))
+    level_two_stars = cursor.fetchone()
+    level_two_stars =level_two_stars[0]
+    cursor = conn.execute("SELECT levelThree FROM Users WHERE username = ?", (username,))
+    level_three_stars = cursor.fetchone()
+    level_three_stars =level_three_stars[0]
+    cursor = conn.execute("SELECT levelFour FROM Users WHERE username = ?", (username,))
+    level_four_stars = cursor.fetchone()
+    level_four_stars =level_four_stars[0]
+    
+    return render_template('Levels.html', username=username,
+                           level_one_stars=level_one_stars, 
+                           level_two_stars=level_two_stars,
+                           level_three_stars=level_three_stars,
+                           level_four_stars=level_four_stars)
 
 def load_global_scores():
     conn = sqlite3.connect('TopRankTanks.db')
